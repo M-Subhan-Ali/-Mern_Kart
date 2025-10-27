@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 MERN KART
 
-## Getting Started
+**MERN KART** is a modern **e-commerce platform** built with the MERN stack for the backend and **Next.js** for the frontend.  
+It supports **both buyers and sellers**, allowing users to create accounts, list products, browse items, and manage carts.  
+The project is styled with **Tailwind CSS** and does **not** use Redux — instead, it uses clean state management with Context/API integration.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 👤 **User Authentication & Roles**
+  - Register/login as **buyer** or **seller**
+  - Secure JWT-based authentication
+- 🏬 **Seller Features**
+  - Create and manage products
+  - Upload product details (title, description, price, images, category)
+- 🛍️ **Buyer Features**
+  - Browse and search products
+  - Add/remove/update items in cart
+  - Checkout flow (future scope: orders & payments)
+- 🛒 **Cart Management**
+  - Add products to cart
+  - Update quantities
+  - Clear/remove items
+- 🎨 **Modern UI**
+  - Responsive design built with **Tailwind CSS**
+  - Clean product cards, forms, and dashboards
+- ⚡ **Next.js Frontend**
+  - Server-side rendering (SSR) & routing
+  - Optimized performance
+- 🗄️ **MERN Backend**
+  - Express API with MongoDB (Mongoose)
+  - Models: **User**, **Product**, **Cart**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack
 
-## Learn More
+- **Frontend**
 
-To learn more about Next.js, take a look at the following resources:
+  - [Next.js](https://nextjs.org/) (React Framework)
+  - [Tailwind CSS](https://tailwindcss.com/) (utility-first styling)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Backend**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  - [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/)
+  - [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/) (ODM)
 
-## Deploy on Vercel
+- **Auth & State**
+  - JWT Authentication
+  - No Redux — handled via Context API / local state
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📂 Models
+
+### 🧑 User Model
+
+- Name, Email, Password (hashed)
+- Role: `buyer` | `seller`
+- Account management fields
+
+### 📦 Product Model
+
+- Title, Description, Price, Images
+- Category
+- Stock
+
+### 🛒 Cart Model
+
+- User reference
+- Product references
+- Quantity, subtotal
