@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react"; 
 import ProductForm from "../../../components/ProductForm"; 
 
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { 
     createProduct, 
     resetProductError, 
     resetProductMessage 
-} from "@/redux/features/productSlice"; 
+} from "../../../redux/features/productSlice"; 
 
 const Create_Products = () => {
     const dispatch = useAppDispatch();

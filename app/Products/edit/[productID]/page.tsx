@@ -12,7 +12,7 @@ import {
   resetProductError,
   resetProductMessage,
 } from "../../../../redux/features/productSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 const EditProductPage = () => {
   const dispatch = useAppDispatch();

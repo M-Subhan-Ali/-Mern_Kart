@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAppDispatch } from "@/redux/hooks";
-import { loginUser } from "@/redux/features/userSlice";
+import { useAppDispatch } from "../../redux/hooks";
+import { loginUser } from "../../redux/features/userSlice";
 import axios from "axios";
 
 const SignUpPage: React.FC = () => {

@@ -2,13 +2,13 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   clearCartLocal,
   fetchCart,
   removeCartItem,
   updateCartItem,
-} from "@/redux/features/cartSlice";
+} from "../../redux/features/cartSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
@@ -16,7 +16,7 @@ import axios from "axios";
 
 
 
-const CartPage: React.FC = () => {
+export default function CartPage  () {
   const dispatch = useAppDispatch();
   const router = useRouter(); 
   const { cart, loading } = useAppSelector((state) => state.cart);
@@ -314,4 +314,3 @@ const handleCheckout = async () => {
   );
 };
 
-export default CartPage;

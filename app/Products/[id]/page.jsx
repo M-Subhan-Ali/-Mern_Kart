@@ -4,17 +4,17 @@ import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import ParticlesBackground from "@/components/ParticleBackground";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+// import ParticlesBackground from "@/components/ParticleBackground";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import Link from "next/link";
 import {
   deleteProduct,
   fetchProductById,
   resetSingleProduct,
-} from "@/redux/features/productSlice";
+} from "../../../redux/features/productSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { addToCart } from "@/redux/features/cartSlice";
+import { addToCart } from "../../../redux/features/cartSlice";
 
 const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState("");
@@ -102,7 +102,7 @@ const ProductDetail = () => {
 
   return (
     <div className="pt-[70px] px-4 sm:px-6 md:px-10 lg:px-32 w-full mx-auto ">
-      <ParticlesBackground />
+      {/* <ParticlesBackground /> */}
 
       {/* Back Button */}
       <div className="pt-10">

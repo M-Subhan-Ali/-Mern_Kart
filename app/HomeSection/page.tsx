@@ -1,7 +1,7 @@
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "../../components/HeroSection";
 import React from "react";
 
-const page = () => {
+export default function Page(){
   return (
     <div>
       <HeroSection />
@@ -9,4 +9,4 @@ const page = () => {
   );
 };
 
-export default page;
+

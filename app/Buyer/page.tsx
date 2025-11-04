@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-const page = () => {
+
+export default function page(){
   return (
     <div className="pt-[100px] px-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-[#378C92]">
@@ -83,4 +84,3 @@ const page = () => {
   );
 };
 
-export default page;

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { clearCart, fetchCart } from "@/redux/features/cartSlice";
-import { fetchUserInfo, logoutUser } from "@/redux/features/userSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { clearCart, fetchCart } from "../redux/features/cartSlice";
+import { fetchUserInfo, logoutUser } from "../redux/features/userSlice";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
