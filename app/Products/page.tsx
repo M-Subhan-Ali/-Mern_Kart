@@ -9,32 +9,54 @@ import { useTheme } from "../../theme/ThemeProvider";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter,useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
+const PER_PAGE = 12;
+
 const Products = () => {
-  const { products, sellerProducts, loading } = useAppSelector((state) => state.product)
+  const { products, sellerProducts, loading } = useAppSelector((state) => state.product);
   const { role, user } = useAppSelector((state) => state.user);
   const { cart } = useAppSelector((state) => state.cart);
-  const productList = role == "seller" ? sellerProducts : products;
-
+  const productList = role === "seller" ? sellerProducts : products;
 
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const route = useRouter()
-
+  const route = useRouter();
+  const searchParams = useSearchParams();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
-  // 🧠 Fetch products based on role
-  useEffect(() => {
-    dispatch(fetchUserInfo()); // always load user first
+  // Pagination state (synced with ?page=)
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // Read initial page from URL
+  useEffect(() => {
+    const p = parseInt(searchParams.get("page") || "1", 10);
+    if (!Number.isNaN(p) && p > 0) setCurrentPage(p);
+  }, [searchParams]);
+
+  // Keep page in range when product list changes
+  const totalPages = Math.max(1, Math.ceil((productList?.length || 0) / PER_PAGE));
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [totalPages, currentPage]);
+
+  // Slice products for current page
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PER_PAGE;
+    return (productList || []).slice(start, start + PER_PAGE);
+  }, [productList, currentPage]);
+
+  // Fetch products based on role
+  useEffect(() => {
+    dispatch(fetchUserInfo()); 
     if (role === "seller") {
       dispatch(fetchSellerProducts());
     } else {
@@ -42,12 +64,9 @@ const Products = () => {
     }
   }, [dispatch, role]);
 
-
-  // 🛒 Add to cart logic
+  //  Add to cart logic
   const handleAddToCart = async (productId: string) => {
-    const alreadyInCart = cart?.items?.some(
-      (item) => item.product._id === productId
-    );
+    const alreadyInCart = cart?.items?.some((item) => item.product._id === productId);
 
     if (alreadyInCart) {
       toast.info("🛒 This item is already in your cart!", {
@@ -70,14 +89,11 @@ const Products = () => {
     }
   };
 
-  // 🛍️ Buy, Edit, Delete handlers
-  // const handleBuyNow = () => {
-  //   toast.info("Redirecting to checkout...", { position: "bottom-center" });
-  // }
+  // 🛍️ Edit / Delete
   const handleEdit = async (productId: string) => {
     toast.info("Redirecting to edit page...", { position: "bottom-center" });
-    route.push(`/Products/${productId}`)
-  }
+    route.push(`/Products/${productId}`);
+  };
 
   const confirmDelete = (productId: string) => {
     setSelectedProductId(productId);
@@ -87,7 +103,7 @@ const Products = () => {
   const handleConfirmDelete = async () => {
     if (!selectedProductId) return;
     try {
-      dispatch(deleteProduct(selectedProductId))
+      dispatch(deleteProduct(selectedProductId));
       toast.success("🗑️ Product deleted successfully!", {
         position: "bottom-center",
       });
@@ -97,6 +113,40 @@ const Products = () => {
       setShowDeleteModal(false);
       setSelectedProductId(null);
     }
+  };
+
+  //  Pagination helpers
+  const goToPage = (page: number) => {
+    const clamped = Math.min(Math.max(page, 1), totalPages);
+    setCurrentPage(clamped);
+
+    // sync to URL ?page=
+    const params = new URLSearchParams(searchParams.toString());
+    if (clamped === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(clamped));
+    }
+    route.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const renderPageNumbers = () => {
+    // Simple, readable pager (1..totalPages). Keep styling minimal to avoid layout changes.
+    return Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+      <button
+        key={p}
+        onClick={() => goToPage(p)}
+        className={`px-3 py-1 rounded-md text-sm border transition ${
+          p === currentPage
+            ? "bg-[#378C92] text-white border-transparent"
+            : "bg-transparent text-gray-300 border-gray-700 hover:bg-gray-800"
+        }`}
+        aria-current={p === currentPage ? "page" : undefined}
+        aria-label={`Go to page ${p}`}
+      >
+        {p}
+      </button>
+    ));
   };
 
   // 🧩 UI
@@ -140,7 +190,7 @@ const Products = () => {
               : "No products available."}
           </div>
         ) : (
-          productList.map((product: any) => (
+          paginatedProducts.map((product: any) => (
             <div
               key={product._id}
               className="bg-black border border-gray-800 rounded-xl shadow-md hover:shadow-lg transition overflow-hidden"
@@ -184,12 +234,6 @@ const Products = () => {
                     >
                       🛒 Add to Cart
                     </button>
-                    {/* <button
-                      onClick={() => handleBuyNow()}
-                      className="flex-1 px-4 py-2 bg-[#378C92] hover:bg-[#2f6e72] text-white rounded-lg transition duration-300"
-                    >
-                      💳 Buy Now
-                    </button> */}
                   </div>
                 )}
 
@@ -222,15 +266,42 @@ const Products = () => {
           ))
         )}
       </div>
+
+      {/* Pagination controls */}
+      {!loading && productList.length > 0 && (
+        <div className="relative z-10 mt-10 flex items-center justify-center gap-2 flex-wrap">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded-md text-sm border border-gray-700 text-gray-300 hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed"
+            aria-label="Previous page"
+          >
+            ‹ Prev
+          </button>
+
+          <div className="flex items-center gap-2">{renderPageNumbers()}</div>
+
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded-md text-sm border border-gray-700 text-gray-300 hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed"
+            aria-label="Next page"
+          >
+            Next ›
+          </button>
+
+          {/* Small info pill (non-intrusive) */}
+          <span className="ml-3 text-xs text-gray-400">
+            Page {currentPage} of {totalPages}
+          </span>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {showDeleteModal && role === "seller" && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999]"
-        >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999]">
           <div className="bg-gray-900/90 text-white rounded-2xl p-6 w-80 shadow-2xl border border-gray-700">
-            <h2 className="text-lg font-semibold mb-3 text-center">
-              Confirm Deletion
-            </h2>
+            <h2 className="text-lg font-semibold mb-3 text-center">Confirm Deletion</h2>
             <p className="text-sm text-gray-300 mb-5 text-center leading-relaxed">
               Are you sure you want to delete this product? <br />
               This action cannot be undone.
@@ -252,7 +323,6 @@ const Products = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
