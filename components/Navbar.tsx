@@ -98,13 +98,13 @@ const Navbar: React.FC = () => {
       <nav className="bg-gradient-to-r from-gray-900 to-gray-800 text-white fixed w-full z-50">
         <div className="container h-[70px] mx-auto px-4 py-4 flex justify-between items-center">
           {/* === Logo === */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 overflow-hidden">
             <Link href="/">
               <Image
                 src="/logo1.png"
                 alt="Logo"
                 width={130}
-                height={130}
+                height={50}
                 className="w-28 sm:w-32 md:w-36 lg:w-40 h-auto"
               />
             </Link>
@@ -200,9 +200,12 @@ const Navbar: React.FC = () => {
 
             {isAuthenticated ? (
               <>
-                <p className="font-bold text-white">
-                  Hi {user?.name || "User"}
-                </p>
+                <button
+                  onClick={handleDashboard}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300 text-sm sm:text-base"
+                >
+                  Welcome {user?.name || "User"}!
+                </button>
                {role !== "seller" && <button
                   onClick={handleCart}
                   className="relative px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition"

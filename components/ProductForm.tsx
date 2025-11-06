@@ -1,28 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 
-const ProductForm = ({
+// ✅ Define the structure of the form data
+interface FormDataType {
+  title: string;
+  description: string;
+  price: string | number;
+  category: string;
+  stock: string | number;
+  existingImages: string[];
+}
+
+// ✅ Define props for ProductForm
+interface ProductFormProps {
+  initialData?: {
+    title?: string;
+    description?: string;
+    price?: number | string;
+    category?: string;
+    stock?: number | string;
+    images?: string[];
+  };
+  onSubmit: (data: FormData) => Promise<void>;
+  loading?: boolean;
+  submitButtonText?: string;
+}
+
+const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
   onSubmit,
-  loading,
-  submitButtonText,
+  loading = false,
+  submitButtonText = "Submit",
 }) => {
-
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const [formData, setFormData] = useState(() => ({
+  const [formData, setFormData] = useState<FormDataType>({
     title: initialData?.title || "",
     description: initialData?.description || "",
     price: initialData?.price || "",
     category: initialData?.category || "",
     stock: initialData?.stock || "",
     existingImages: initialData?.images || [],
-  }));
+  });
 
-  const [newImages, setNewImages] = useState([]);
+  const [newImages, setNewImages] = useState<File[]>([]);
 
+  // ✅ Initialize data only once (useful for editing)
   useEffect(() => {
     if (initialData && !isInitialized) {
       setFormData({
@@ -36,19 +61,27 @@ const ProductForm = ({
       setNewImages([]);
       setIsInitialized(true);
     }
-  }, [initialData,isInitialized]);
+  }, [initialData, isInitialized]);
 
-  const handleChange = (e) => {
+  // ✅ Handle input field change
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setNewImages(Array.from(e.target.files));
+  // ✅ Handle file uploads
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setNewImages(Array.from(e.target.files));
+    }
   };
 
-  // 👇 NEW: Handler to remove an existing image
-  const handleRemoveExistingImage = (imageUrlToRemove) => {
+  // ✅ Remove existing image
+  const handleRemoveExistingImage = (imageUrlToRemove: string) => {
     setFormData((prev) => ({
       ...prev,
       existingImages: prev.existingImages.filter(
@@ -57,26 +90,29 @@ const ProductForm = ({
     }));
   };
 
-  const handleSubmit = async (e) => {
+  // ✅ Handle submit
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const data = new FormData();
 
-    // Append all text fields
+    // Append all text fields (except existingImages)
     Object.entries(formData).forEach(([key, value]) => {
       if (key !== "existingImages") {
-        data.append(key, value);
+        data.append(key, String(value));
       }
     });
 
+    // Keep existing images
     data.append("existingImagesToKeep", JSON.stringify(formData.existingImages));
 
-
+    // Add new uploaded images
     newImages.forEach((file) => data.append("images", file));
 
     try {
       await onSubmit(data);
 
+      // Reset form if creating a new product
       if (!initialData) {
         setFormData({
           title: "",
@@ -84,13 +120,12 @@ const ProductForm = ({
           price: "",
           category: "",
           stock: "",
-          existingImages: []
+          existingImages: [],
         });
         setNewImages([]);
       }
     } catch (err) {
       console.error("❌ Error submitting product:", err);
-      throw err;
     }
   };
 
@@ -125,12 +160,14 @@ const ProductForm = ({
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Description
+        </label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows="4"
+          rows={4}
           required
           className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
         />
@@ -154,7 +191,9 @@ const ProductForm = ({
 
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Category</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Category
+        </label>
         <select
           name="category"
           value={formData.category}
@@ -185,7 +224,7 @@ const ProductForm = ({
         />
       </div>
 
-      {/* Images Upload for New/Existing */}
+      {/* Upload new images */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Upload New Images
@@ -200,12 +239,13 @@ const ProductForm = ({
         />
       </div>
 
-      {/* Image Preview - Existing Images (for edit) */}
+      {/* Existing Images */}
       {formData.existingImages.length > 0 && (
         <div className="flex flex-wrap gap-3 mt-3">
-          <p className="w-full text-sm text-gray-500">Existing Images (click to remove):</p>
+          <p className="w-full text-sm text-gray-500">
+            Existing Images (click trash icon to remove):
+          </p>
           {formData.existingImages.map((imageUrl, i) => (
-            // 👇 NEW: Wrap image in a container with a delete button
             <div
               key={`existing-${i}`}
               className="relative w-24 h-24 rounded-md border"
@@ -228,7 +268,7 @@ const ProductForm = ({
         </div>
       )}
 
-      {/* Image Preview - New Images */}
+      {/* New Images Preview */}
       {newImages.length > 0 && (
         <div className="flex flex-wrap gap-3 mt-3">
           <p className="w-full text-sm text-gray-500">New Images to Upload:</p>
@@ -243,12 +283,13 @@ const ProductForm = ({
         </div>
       )}
 
-      {/* Submit */}
+      {/* Submit Button */}
       <button
         type="submit"
         disabled={loading}
-        className={`w-full ${loading ? "bg-gray-400" : "bg-teal-600 hover:bg-teal-700"
-          } text-white font-medium py-2 px-4 rounded-md transition`}
+        className={`w-full ${
+          loading ? "bg-gray-400" : "bg-teal-600 hover:bg-teal-700"
+        } text-white font-medium py-2 px-4 rounded-md transition`}
       >
         {loading ? "Processing..." : submitButtonText}
       </button>
