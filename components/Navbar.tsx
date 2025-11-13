@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { clearCart, fetchCart } from "../redux/features/cartSlice";
 import { fetchUserInfo, logoutUser } from "../redux/features/userSlice";
-import { wrap } from "module";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);

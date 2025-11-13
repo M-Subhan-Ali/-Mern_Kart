@@ -31,7 +31,6 @@ const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      // ✅ Use Redux thunk instead of direct axios call
       const user = await dispatch(loginUser({ email, password, role })).unwrap();
 
       toast.success("Login successful! Redirecting...", {
@@ -39,7 +38,7 @@ const LoginPage: React.FC = () => {
         autoClose: 1800,
       });
 
-      // Save success flag (optional for toast in Navbar)
+      // Save success flag 
       if (typeof window !== "undefined") {
         localStorage.setItem("loginSuccess", "true");
       }
