@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 
-// ✅ Define the structure of the form data
+
 interface FormDataType {
   title: string;
   description: string;
@@ -13,7 +13,7 @@ interface FormDataType {
   existingImages: string[];
 }
 
-// ✅ Define props for ProductForm
+
 interface ProductFormProps {
   initialData?: {
     title?: string;
@@ -47,7 +47,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   const [newImages, setNewImages] = useState<File[]>([]);
 
-  // ✅ Initialize data only once (useful for editing)
+  // Initialize data only once for editing
   useEffect(() => {
     if (initialData && !isInitialized) {
       setFormData({
@@ -63,7 +63,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   }, [initialData, isInitialized]);
 
-  // ✅ Handle input field change
+  //  Handle input field change
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -73,14 +73,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Handle file uploads
+  //  Handle file uploads
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setNewImages(Array.from(e.target.files));
     }
   };
 
-  // ✅ Remove existing image
+  //  Remove existing image
   const handleRemoveExistingImage = (imageUrlToRemove: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -90,7 +90,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }));
   };
 
-  // ✅ Handle submit
+  //  Handle submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

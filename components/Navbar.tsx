@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { clearCart, fetchCart } from "../redux/features/cartSlice";
 import { fetchUserInfo, logoutUser } from "../redux/features/userSlice";
+import { wrap } from "module";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,8 +25,13 @@ const Navbar: React.FC = () => {
 
   //  Fetch user info from Redux
   useEffect(() => {
-    dispatch(fetchUserInfo());
-  }, [dispatch]);
+    if(cookies.token){
+    dispatch(fetchUserInfo()).unwrap().catch(()=>{
+      console.warn("Failed to fetch user info");
+    });
+ 
+  }
+ }, [cookies.token,dispatch]);
 
   //  Fetch cart when authenticated
   useEffect(() => {
@@ -112,7 +118,7 @@ const Navbar: React.FC = () => {
 
           {/* === Desktop Menu === */}
           <div className="hidden sm:flex items-center space-x-4">
-            {userLoading ? (
+            {userLoading && cookies.token ? (
               <p className="text-gray-400 animate-pulse">Loading...</p>
             ) : isAuthenticated ? (
               <>
@@ -202,7 +208,7 @@ const Navbar: React.FC = () => {
               <>
                 <button
                   onClick={handleDashboard}
-                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300 text-sm sm:text-base"
+                  className="text-xs sm:text-md px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300 text-sm sm:text-base"
                 >
                   Welcome {user?.name || "User"}!
                 </button>
@@ -219,7 +225,7 @@ const Navbar: React.FC = () => {
                 </button>}
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-white text-black hover:bg-amber-200 rounded-lg transition"
+                  className="text-xs sm:text-md px-4 py-2 bg-white text-black hover:bg-amber-200 rounded-lg transition"
                 >
                   Logout
                 </button>
