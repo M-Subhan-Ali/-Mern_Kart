@@ -11,7 +11,6 @@ import { fetchUserInfo, logoutUser } from "../redux/features/userSlice";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cookies, , removeCookie] = useCookies(["token"]);
   
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
