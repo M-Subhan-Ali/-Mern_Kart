@@ -12,7 +12,7 @@ import { fetchUserInfo, logoutUser } from "../redux/features/userSlice";
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cookies, , removeCookie] = useCookies(["token"]);
-
+  
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -21,16 +21,13 @@ const Navbar: React.FC = () => {
     (state) => state.user
   );
   const { cart } = useAppSelector((state) => state.cart);
+  console.log("navbar user ",user)
 
   //  Fetch user info from Redux
-  useEffect(() => {
-    if(cookies.token){
-    dispatch(fetchUserInfo()).unwrap().catch(()=>{
-      console.warn("Failed to fetch user info");
-    });
- 
-  }
- }, [cookies.token,dispatch]);
+ useEffect(() => {
+  dispatch(fetchUserInfo());
+}, [dispatch]);
+
 
   //  Fetch cart when authenticated
   useEffect(() => {
@@ -55,7 +52,6 @@ const Navbar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
-      removeCookie("token");
       dispatch(clearCart());
       toast.success("You’ve been logged out successfully!", {
         position: "top-center",
@@ -117,7 +113,7 @@ const Navbar: React.FC = () => {
 
           {/* === Desktop Menu === */}
           <div className="hidden sm:flex items-center space-x-4">
-            {userLoading && cookies.token ? (
+            {userLoading ? (
               <p className="text-gray-400 animate-pulse">Loading...</p>
             ) : isAuthenticated ? (
               <>
