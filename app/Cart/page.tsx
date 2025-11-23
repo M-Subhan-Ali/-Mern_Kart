@@ -16,13 +16,13 @@ import axios from "axios";
 
 
 
-export default function CartPage  () {
+export default function CartPage() {
   const dispatch = useAppDispatch();
-  const router = useRouter(); 
+  const router = useRouter();
   const { cart, loading } = useAppSelector((state) => state.cart);
   const { isAuthenticated, loading: userLoading, user } = useAppSelector(
     (state) => state.user
-  ); 
+  );
 
   const isLoggedIn = isAuthenticated;
 
@@ -40,7 +40,7 @@ export default function CartPage  () {
       // redirect seller automatically
       router.push("/Seller");
 
-      //  message for debugging
+      // 	message for debugging
       console.log("Seller logged in showing message instead of cart");
     }
   }, [user]);
@@ -63,27 +63,27 @@ export default function CartPage  () {
     }
   };
 
-const handleCheckout = async () => {
-  try {
-    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+  const handleCheckout = async () => {
+    try {
+      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-    // Create session
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_ROUTE}/api/payment/create-checkout-session`,
-      {}, 
-      { withCredentials: true }
-    );
+      // Create session
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_ROUTE}/api/payment/create-checkout-session`,
+        {},
+        { withCredentials: true }
+      );
 
-    const { url } = response.data;
-    if (!url) throw new Error("No checkout URL received from backend.");
+      const { url } = response.data;
+      if (!url) throw new Error("No checkout URL received from backend.");
 
-    // ✅ Redirect to Stripe Checkout
-    window.location.href = url;
-  } catch (error: any) {
-    console.error("Checkout error:", error);
-    toast.error(error.response?.data?.error || "Checkout failed, please try again.");
-  }
-};
+      // ✅ Redirect to Stripe Checkout
+      window.location.href = url;
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      toast.error(error.response?.data?.error || "Checkout failed, please try again.");
+    }
+  };
 
 
 
@@ -209,6 +209,7 @@ const handleCheckout = async () => {
                 key={item.product._id}
                 className="flex flex-col sm:flex-row sm:items-center justify-between py-5 hover:bg-gray-50 rounded-xl transition"
               >
+                {/* Product Image and Title */}
                 <div className="flex items-center gap-5">
                   <Image
                     src={item.product.images?.[0] || "/no-image.png"}
@@ -227,8 +228,14 @@ const handleCheckout = async () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-5 mt-4 sm:mt-0">
+                {/* Quantity, Subtotal, Remove Controls */}
+                {/*
+                  KEY CHANGE: Reduced mobile gap (gap-5 -> gap-3)
+                  and adjusted element widths/paddings for small screens.
+                */}
+                <div className="flex items-center gap-3 sm:gap-5 mt-4 sm:mt-0">
                   <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                    {/* Minus Button */}
                     <button
                       onClick={() =>
                         handleQuantityChange(
@@ -236,13 +243,19 @@ const handleCheckout = async () => {
                           item.quantity - 1
                         )
                       }
-                      className="px-3 py-1 hover:bg-gray-100 text-lg"
+                      // Reduced px-3 to px-2 and text-lg to text-base for mobile
+                      className="px-2 py-1 hover:bg-gray-100 text-base sm:text-lg"
                     >
                       −
                     </button>
-                    <span className="px-4 py-1 font-medium text-gray-700 bg-gray-50">
+                    {/* Quantity Display */}
+                    <span 
+                      // Reduced px-4 to px-3 and set text size explicitly
+                      className="px-3 py-1 font-medium text-gray-700 bg-gray-50 text-sm sm:text-base"
+                    >
                       {item.quantity}
                     </span>
+                    {/* Plus Button (Now visible) */}
                     <button
                       onClick={() =>
                         handleQuantityChange(
@@ -250,17 +263,24 @@ const handleCheckout = async () => {
                           item.quantity + 1
                         )
                       }
-                      className="px-3 py-1 hover:bg-gray-100 text-lg"
+                      // Reduced px-3 to px-2 and text-lg to text-base for mobile
+                      className="px-2 py-1 hover:bg-gray-100 text-base sm:text-lg"
                     >
                       +
                     </button>
                   </div>
-                  <p className="w-24 text-right font-semibold text-gray-700">
+                  {/* Item Subtotal Price */}
+                  <p 
+                    // Made width responsive and adjusted text size
+                    className="w-auto min-w-[55px] text-right font-semibold text-gray-700 text-sm sm:w-24 sm:text-base"
+                  >
                     ${(item.product.price * item.quantity).toFixed(2)}
                   </p>
+                  {/* Remove Button */}
                   <button
                     onClick={() => handleRemove(item.product._id)}
-                    className="text-red-500 hover:text-red-600 text-sm font-medium"
+                    // Added whitespace-nowrap and made size smaller for mobile
+                    className="text-red-500 hover:text-red-600 text-xs sm:text-sm font-medium whitespace-nowrap"
                   >
                     Remove
                   </button>
@@ -297,8 +317,8 @@ const handleCheckout = async () => {
           </div>
 
           <button
-           onClick={handleCheckout}
-          className="w-full mt-6 py-3 rounded-xl bg-gradient-to-r from-gray-500 to-gray-700 text-white font-medium hover:from-gray-600 hover:to-gray-800 transition-all duration-300 shadow-md">
+            onClick={handleCheckout}
+            className="w-full mt-6 py-3 rounded-xl bg-gradient-to-r from-gray-500 to-gray-700 text-white font-medium hover:from-gray-600 hover:to-gray-800 transition-all duration-300 shadow-md">
             Proceed to Checkout
           </button>
 
@@ -313,4 +333,3 @@ const handleCheckout = async () => {
     </div>
   );
 };
-

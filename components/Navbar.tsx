@@ -22,20 +22,23 @@ const Navbar: React.FC = () => {
   const { cart } = useAppSelector((state) => state.cart);
   console.log("navbar user ",user)
 
-  //  Fetch user info from Redux
- useEffect(() => {
-  dispatch(fetchUserInfo());
-}, [dispatch]);
+  // 	Fetch user info from Redux
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
+
+// console.log(cart)
+// console.log(user)
 
 
-  //  Fetch cart when authenticated
+  // 	Fetch cart when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchCart());
     }
   }, [isAuthenticated, dispatch]);
 
-  //  Close mobile menu when clicking outside
+  // 	Close mobile menu when clicking outside
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -47,7 +50,7 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [menuOpen]);
 
-  //  Logout (Redux)
+  // 	Logout (Redux)
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
@@ -64,7 +67,7 @@ const Navbar: React.FC = () => {
     }
   };
 
-  //  Navigation handlers
+  // 	Navigation handlers
   const handleLogin = () => {
     toast.info("Redirecting to Login page...", { position: "bottom-center" });
     router.push("/Login");
@@ -124,7 +127,7 @@ const Navbar: React.FC = () => {
                 </button>
 
                 {/* 🛒 Cart with count */}
-               {role !== "seller" && <button
+                {role !== "seller" && <button
                   onClick={handleCart}
                   className="relative px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300 text-sm sm:text-base"
                 >
@@ -146,7 +149,7 @@ const Navbar: React.FC = () => {
             ) : (
               <>
                 {/* 🛒 Cart without login */}
-               {role !== "seller" && <button
+                {role !== "seller" && <button
                   onClick={handleCart}
                   className="relative px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300 text-sm sm:text-base"
                 >
@@ -178,7 +181,7 @@ const Navbar: React.FC = () => {
           <div className="sm:hidden">
             <button
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="text-white focus:outline-none"
+              className="text-white focus:outline-none text-xl" 
             >
               {menuOpen ? "✖" : "☰"}
             </button>
@@ -202,13 +205,13 @@ const Navbar: React.FC = () => {
               <>
                 <button
                   onClick={handleDashboard}
-                  className="text-xs sm:text-md px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300 text-sm sm:text-base"
+                  className="text-base px-4 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg transition duration-300" 
                 >
                   Welcome {user?.name || "User"}!
                 </button>
-               {role !== "seller" && <button
+                {role !== "seller" && <button
                   onClick={handleCart}
-                  className="relative px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition"
+                  className="relative px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition text-base" 
                 >
                   🛒 Cart
                   { isAuthenticated && cart?.items && cart.items.length > 0 && (
@@ -219,16 +222,16 @@ const Navbar: React.FC = () => {
                 </button>}
                 <button
                   onClick={handleLogout}
-                  className="text-xs sm:text-md px-4 py-2 bg-white text-black hover:bg-amber-200 rounded-lg transition"
+                  className="text-base px-4 py-3 bg-white text-black hover:bg-amber-200 rounded-lg transition" 
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-               {role !== "seller" && <button
+                {role !== "seller" && <button
                   onClick={handleCart}
-                  className="relative px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition"
+                  className="relative px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition text-base" 
                 >
                   🛒 Cart
                   { isAuthenticated && cart?.items && cart.items.length > 0 && (
@@ -239,13 +242,13 @@ const Navbar: React.FC = () => {
                 </button>}
                 <button
                   onClick={handleLogin}
-                  className="px-4 py-2 bg-white text-black hover:bg-amber-200 rounded-lg transition"
+                  className="px-4 py-3 bg-white text-black hover:bg-amber-200 rounded-lg transition text-base" 
                 >
                   Login
                 </button>
                 <button
                   onClick={handleSignUp}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition"
+                  className="px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition text-base" 
                 >
                   Sign Up
                 </button>
