@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../../utils/apiConfig";
 
 // === Async Thunks ===
 
@@ -9,7 +10,7 @@ export const fetchUserInfo = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_ROUTE}/user/getUserInfo`,
+        `${API_BASE_URL}/user/getUserInfo`,
         { withCredentials: true }
       );
       return res.data.user;
@@ -34,7 +35,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_ROUTE}/authentication/Login`,
+        `${API_BASE_URL}/authentication/Login`,
         { email, password, role },
         { withCredentials: true }
       );
@@ -54,7 +55,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_ROUTE}/authentication/logout`,
+        `${API_BASE_URL}/authentication/logout`,
         {},
         { withCredentials: true }
       );
@@ -66,15 +67,15 @@ export const logoutUser = createAsyncThunk(
 );
 
 
-export const userCheckLogin = createAsyncThunk("user/verify",async (_,{rejectWithValue})=>{
- try {
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_ROUTE}/user/userInfo`,
-     { withCredentials : true}
-   );
-   return res.data.user
- } catch (error : any) {
-   return rejectWithValue("Logout failed");
- }
+export const userCheckLogin = createAsyncThunk("user/verify", async (_, { rejectWithValue }) => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/user/userInfo`,
+      { withCredentials: true }
+    );
+    return res.data.user
+  } catch (error: any) {
+    return rejectWithValue("Logout failed");
+  }
 })
 
 export interface User {
@@ -94,10 +95,10 @@ export interface UserState {
 }
 
 // === Initial State ===
-const initialState : UserState = {
+const initialState: UserState = {
   user: null,
   role: null,
-  login:false,
+  login: false,
   loading: false,
   error: null as string | null,
   isAuthenticated: false,
@@ -140,14 +141,14 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.login=true;
+        state.login = true;
         state.user = action.payload;
         state.role = action.payload?.role || null;
-        state.isAuthenticated = true ;
+        state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.login=false;
+        state.login = false;
         state.error = action.payload as string;
       });
 
@@ -158,19 +159,19 @@ const userSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
-         state.login=false;
+        state.login = false;
         state.user = null;
         state.role = null;
-        state.isAuthenticated = false ;
+        state.isAuthenticated = false;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
-         state.login=true;
+        state.login = true;
         state.error = action.payload as string;
       });
-     
-      //check login
-      builder
+
+    //check login
+    builder
       .addCase(userCheckLogin.pending, (state) => {
         state.loading = true;
       })

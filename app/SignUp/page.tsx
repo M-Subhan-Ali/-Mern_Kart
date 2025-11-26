@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAppDispatch } from "../../redux/hooks";
 import { loginUser } from "../../redux/features/userSlice";
 import axios from "axios";
+import { API_BASE_URL } from "../../utils/apiConfig";
 
 const SignUpPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -53,7 +54,7 @@ const SignUpPage: React.FC = () => {
 
       // ✅ Step 1: Create user
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_ROUTE}/authentication/signUp`,
+        `${API_BASE_URL}/authentication/signUp`,
         userData,
         { withCredentials: true }
       );
@@ -280,11 +281,10 @@ const SignUpPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none ${
-              loading
+            className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none ${loading
                 ? "bg-gray-400 text-white cursor-not-allowed"
                 : "bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
-            }`}
+              }`}
           >
             {loading ? "Creating Account..." : "Sign Up"}
           </button>

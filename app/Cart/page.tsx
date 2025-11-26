@@ -13,8 +13,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-
-
+import { API_BASE_URL } from "../../utils/apiConfig";
 
 export default function CartPage() {
   const dispatch = useAppDispatch();
@@ -69,7 +68,7 @@ export default function CartPage() {
 
       // Create session
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_ROUTE}/api/payment/create-checkout-session`,
+        `${API_BASE_URL}/api/payment/create-checkout-session`,
         {},
         { withCredentials: true }
       );
@@ -84,12 +83,6 @@ export default function CartPage() {
       toast.error(error.response?.data?.error || "Checkout failed, please try again.");
     }
   };
-
-
-
-
-
-
 
   const total =
     cart?.items?.reduce((sum, i) => sum + i.product.price * i.quantity, 0) || 0;
@@ -249,7 +242,7 @@ export default function CartPage() {
                       −
                     </button>
                     {/* Quantity Display */}
-                    <span 
+                    <span
                       // Reduced px-4 to px-3 and set text size explicitly
                       className="px-3 py-1 font-medium text-gray-700 bg-gray-50 text-sm sm:text-base"
                     >
@@ -270,7 +263,7 @@ export default function CartPage() {
                     </button>
                   </div>
                   {/* Item Subtotal Price */}
-                  <p 
+                  <p
                     // Made width responsive and adjusted text size
                     className="w-auto min-w-[55px] text-right font-semibold text-gray-700 text-sm sm:w-24 sm:text-base"
                   >

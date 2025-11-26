@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // 🌐 Base URL (ensure your .env file has this)
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_ROUTE;
+import { API_BASE_URL } from "../../utils/apiConfig";
+const BASE_URL = API_BASE_URL;
 
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
@@ -111,8 +112,8 @@ const cartSlice = createSlice({
     resetCartError: (state) => {
       state.error = null;
     },
-    clearCartLocal:(state)=>{
-      state.cart = {items:[]}
+    clearCartLocal: (state) => {
+      state.cart = { items: [] }
     }
   },
   extraReducers: (builder) => {
@@ -149,5 +150,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { resetCartError,clearCartLocal } = cartSlice.actions;
+export const { resetCartError, clearCartLocal } = cartSlice.actions;
 export default cartSlice.reducer;

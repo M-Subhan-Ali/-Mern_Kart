@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_ROUTE;
+import { API_BASE_URL } from "../../utils/apiConfig";
+const BASE_URL = API_BASE_URL;
 
 // ========================= 🧠 THUNKS =========================
 
@@ -108,8 +109,8 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     resetSingleProduct: (state) => {
-        state.singleProduct = {};     // 🧹 clear old data
-      },
+      state.singleProduct = {};     // 🧹 clear old data
+    },
     resetProductError: (state) => {
       state.error = null;
     },
@@ -184,5 +185,5 @@ const productSlice = createSlice({
 });
 
 // ========================= 🧭 EXPORTS =========================
-export const { resetSingleProduct ,resetProductError, resetProductMessage } = productSlice.actions;
+export const { resetSingleProduct, resetProductError, resetProductMessage } = productSlice.actions;
 export default productSlice.reducer;

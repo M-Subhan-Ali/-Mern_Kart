@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
     // ✅ Optional: ignore ESLint errors during build (for Render/Vercel)
     ignoreDuringBuilds: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/proxy/:path*",
+        destination: `${process.env.NEXT_PUBLIC_BASE_ROUTE}/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
