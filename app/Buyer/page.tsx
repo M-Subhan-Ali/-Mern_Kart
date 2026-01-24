@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 
-export default function page(){
+export default function page() {
   return (
     <div className="pt-[100px] px-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-[#378C92]">
@@ -25,7 +25,7 @@ export default function page(){
           </Link>
         </div>
 
-         <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
+        <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
           <h2 className="text-xl font-semibold mb-2">Browse Products</h2>
           <p className="text-gray-600 mb-4">
             View Your added items to your cart.
@@ -45,7 +45,7 @@ export default function page(){
             Check status of all your placed orders.
           </p>
           <Link
-            href="/buyer/orders"
+            href="/Buyer/Orders"
             className="inline-block px-4 py-2 bg-[#378C92] text-white rounded hover:bg-[#2c6d70]"
           >
             View Orders
