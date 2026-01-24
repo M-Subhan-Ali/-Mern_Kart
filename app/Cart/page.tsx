@@ -23,6 +23,17 @@ export default function CartPage() {
     (state) => state.user
   );
 
+  const [shipping, setShipping] = React.useState({
+    name: "",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "USA",
+  });
+
   const isLoggedIn = isAuthenticated;
 
   useEffect(() => {
@@ -63,13 +74,18 @@ export default function CartPage() {
   };
 
   const handleCheckout = async () => {
+    if (!shipping.name || !shipping.phone || !shipping.addressLine1 || !shipping.city || !shipping.state || !shipping.postalCode || !shipping.country) {
+      toast.error("Please fill in all shipping details.");
+      return;
+    }
+
     try {
       const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
       // Create session
       const response = await axios.post(
         `${API_BASE_URL}/api/payment/create-checkout-session`,
-        {},
+        { shipping },
         { withCredentials: true }
       );
 
@@ -194,97 +210,167 @@ export default function CartPage() {
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* LEFT SIDE - Cart Items */}
-        <div className="flex-1 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6">
-          <div className="divide-y divide-gray-200">
-            {cart.items.map((item) => (
-              <div
-                key={item.product._id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between py-5 hover:bg-gray-50 rounded-xl transition"
-              >
-                {/* Product Image and Title */}
-                <div className="flex items-center gap-5">
-                  <Image
-                    src={item.product.images?.[0] || "/no-image.png"}
-                    alt={item.product.title}
-                    width={90}
-                    height={90}
-                    className="rounded-lg object-cover border border-gray-200 shadow-sm"
-                  />
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-800">
-                      {item.product.title}
-                    </h2>
-                    <p className="text-sm text-gray-500 mt-1">
-                      ${item.product.price.toFixed(2)}
+        {/* LEFT SIDE - Cart Items & Shipping Form */}
+        <div className="flex-1 space-y-8">
+          {/* Cart Items */}
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6">
+            <div className="divide-y divide-gray-200">
+              {cart.items.map((item) => (
+                <div
+                  key={item.product._id}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between py-5 hover:bg-gray-50 rounded-xl transition"
+                >
+                  <div className="flex items-center gap-5">
+                    <Image
+                      src={item.product.images?.[0] || "/no-image.png"}
+                      alt={item.product.title}
+                      width={90}
+                      height={90}
+                      className="rounded-lg object-cover border border-gray-200 shadow-sm"
+                    />
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-800">
+                        {item.product.title}
+                      </h2>
+                      <p className="text-sm text-gray-500 mt-1">
+                        ${item.product.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 sm:gap-5 mt-4 sm:mt-0">
+                    <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.product._id, item.quantity - 1)
+                        }
+                        className="px-2 py-1 hover:bg-gray-100 text-base sm:text-lg"
+                      >
+                        −
+                      </button>
+                      <span className="px-3 py-1 font-medium text-gray-700 bg-gray-50 text-sm sm:text-base">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.product._id, item.quantity + 1)
+                        }
+                        className="px-2 py-1 hover:bg-gray-100 text-base sm:text-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="w-auto min-w-[55px] text-right font-semibold text-gray-700 text-sm sm:w-24 sm:text-base">
+                      ${(item.product.price * item.quantity).toFixed(2)}
                     </p>
+                    <button
+                      onClick={() => handleRemove(item.product._id)}
+                      className="text-red-500 hover:text-red-600 text-xs sm:text-sm font-medium whitespace-nowrap"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                {/* Quantity, Subtotal, Remove Controls */}
-                {/*
-                  KEY CHANGE: Reduced mobile gap (gap-5 -> gap-3)
-                  and adjusted element widths/paddings for small screens.
-                */}
-                <div className="flex items-center gap-3 sm:gap-5 mt-4 sm:mt-0">
-                  <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-                    {/* Minus Button */}
-                    <button
-                      onClick={() =>
-                        handleQuantityChange(
-                          item.product._id,
-                          item.quantity - 1
-                        )
-                      }
-                      // Reduced px-3 to px-2 and text-lg to text-base for mobile
-                      className="px-2 py-1 hover:bg-gray-100 text-base sm:text-lg"
-                    >
-                      −
-                    </button>
-                    {/* Quantity Display */}
-                    <span
-                      // Reduced px-4 to px-3 and set text size explicitly
-                      className="px-3 py-1 font-medium text-gray-700 bg-gray-50 text-sm sm:text-base"
-                    >
-                      {item.quantity}
-                    </span>
-                    {/* Plus Button (Now visible) */}
-                    <button
-                      onClick={() =>
-                        handleQuantityChange(
-                          item.product._id,
-                          item.quantity + 1
-                        )
-                      }
-                      // Reduced px-3 to px-2 and text-lg to text-base for mobile
-                      className="px-2 py-1 hover:bg-gray-100 text-base sm:text-lg"
-                    >
-                      +
-                    </button>
-                  </div>
-                  {/* Item Subtotal Price */}
-                  <p
-                    // Made width responsive and adjusted text size
-                    className="w-auto min-w-[55px] text-right font-semibold text-gray-700 text-sm sm:w-24 sm:text-base"
-                  >
-                    ${(item.product.price * item.quantity).toFixed(2)}
-                  </p>
-                  {/* Remove Button */}
-                  <button
-                    onClick={() => handleRemove(item.product._id)}
-                    // Added whitespace-nowrap and made size smaller for mobile
-                    className="text-red-500 hover:text-red-600 text-xs sm:text-sm font-medium whitespace-nowrap"
-                  >
-                    Remove
-                  </button>
+          {/* Shipping Address Form */}
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+              📍 Shipping Details
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  placeholder="John Doe"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                  value={shipping.name}
+                  onChange={(e) => setShipping({ ...shipping, name: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    placeholder="+1 234 567 890"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                    value={shipping.phone}
+                    onChange={(e) => setShipping({ ...shipping, phone: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <input
+                    type="text"
+                    placeholder="Country"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                    value={shipping.country}
+                    onChange={(e) => setShipping({ ...shipping, country: e.target.value })}
+                  />
                 </div>
               </div>
-            ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
+                <input
+                  type="text"
+                  placeholder="Street address, P.O. box"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                  value={shipping.addressLine1}
+                  onChange={(e) => setShipping({ ...shipping, addressLine1: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2 (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="Apartment, suite, unit, building, floor, etc."
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                  value={shipping.addressLine2}
+                  onChange={(e) => setShipping({ ...shipping, addressLine2: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <input
+                    type="text"
+                    placeholder="City"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                    value={shipping.city}
+                    onChange={(e) => setShipping({ ...shipping, city: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                  <input
+                    type="text"
+                    placeholder="State"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                    value={shipping.state}
+                    onChange={(e) => setShipping({ ...shipping, state: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
+                  <input
+                    type="text"
+                    placeholder="ZIP Code"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
+                    value={shipping.postalCode}
+                    onChange={(e) => setShipping({ ...shipping, postalCode: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* RIGHT SIDE - Summary */}
-        <div className="lg:w-1/3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 h-fit sticky top-28">
+        <div className="lg:w-1/3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 h-fit lg:sticky lg:top-28">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Order Summary
           </h2>
@@ -311,7 +397,8 @@ export default function CartPage() {
 
           <button
             onClick={handleCheckout}
-            className="w-full mt-6 py-3 rounded-xl bg-gradient-to-r from-gray-500 to-gray-700 text-white font-medium hover:from-gray-600 hover:to-gray-800 transition-all duration-300 shadow-md">
+            className="w-full mt-6 py-3 rounded-xl bg-gradient-to-r from-gray-500 to-gray-700 text-white font-medium hover:from-gray-600 hover:to-gray-800 transition-all duration-300 shadow-md"
+          >
             Proceed to Checkout
           </button>
 
@@ -325,4 +412,4 @@ export default function CartPage() {
       </div>
     </div>
   );
-};
+}
