@@ -4,7 +4,7 @@ import { getMyOrders } from "@/api/order";
 
 const BASE_URL = API_BASE_URL;
 
-export const FetchMyOrders = createAsyncThunk<any[], void, { rejectValue: string }>(
+export const FetchMyOrders = createAsyncThunk<{ orders: any[] }, void, { rejectValue: string }>(
     "orders/fetchMyOrders",
     async (_, { rejectWithValue }) => {
         try {
@@ -34,7 +34,7 @@ const orderSlice = createSlice({
             })
             .addCase(FetchMyOrders.fulfilled, (state, action) => {
                 state.loading = false;
-                state.orders = action.payload;
+                state.orders = action.payload.orders;
             })
             .addCase(FetchMyOrders.rejected, (state, action) => {
                 state.loading = false;
