@@ -17,12 +17,18 @@ export function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/Unauthorized", req.url))
     }
 
+
+    if (pathname.startsWith("/Products/create") && role !== "seller") {
+        return NextResponse.redirect(new URL("/Unauthorized", req.url));
+    }
+
+
     if (pathname.startsWith("/Buyer/Orders") && role !== "buyer") {
-        return NextResponse.redirect(new URL("/Login", req.url));
+        return NextResponse.redirect(new URL("/Unauthorized", req.url));
     }
 
     if (pathname.startsWith("/Seller/Orders") && role !== "seller") {
-        return NextResponse.redirect(new URL("/Login", req.url));
+        return NextResponse.redirect(new URL("/Unauthorized", req.url));
     }
 
     return NextResponse.next();
