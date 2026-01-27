@@ -44,7 +44,7 @@ const page = () => {
             Check orders placed for your products.
           </p>
           <Link
-            href="/seller/orders"
+            href="/Seller/Orders"
             className="inline-block px-4 py-2 bg-[#378C92] text-white rounded hover:bg-[#2c6d70]"
           >
             View Orders
