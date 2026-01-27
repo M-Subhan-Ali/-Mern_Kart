@@ -52,7 +52,7 @@ const page = () => {
         </div>
 
         {/* Order Summary */}
-        <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
+        {/* <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
           <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
           <p className="text-gray-600 mb-4">
             Track delivered, cancelled, and pending orders.
@@ -63,7 +63,7 @@ const page = () => {
           >
             View Summary
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

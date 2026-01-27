@@ -53,7 +53,7 @@ export default function page() {
         </div>
 
         {/* Cancelled & Delivered */}
-        <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
+        {/* <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
           <h2 className="text-xl font-semibold mb-2">Order History</h2>
           <p className="text-gray-600 mb-4">
             Review your delivered and cancelled orders.
@@ -64,10 +64,10 @@ export default function page() {
           >
             View History
           </Link>
-        </div>
+        </div> */}
 
         {/* Optional: Account Info */}
-        <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
+        {/* <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all">
           <h2 className="text-xl font-semibold mb-2">Account Info</h2>
           <p className="text-gray-600 mb-4">
             View or update your profile information.
@@ -78,7 +78,7 @@ export default function page() {
           >
             Manage Account
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
