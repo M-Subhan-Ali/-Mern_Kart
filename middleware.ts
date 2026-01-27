@@ -36,5 +36,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/Seller/:path*", "/Buyer/:path*"]
+    matcher: ["/Seller/:path*", "/Buyer/:path*", "/Products/create"]
 }
