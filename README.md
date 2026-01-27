@@ -48,7 +48,7 @@ The project is styled with **Tailwind CSS** and does **not** use Redux — inste
 
 - **Auth & State**
   - JWT Authentication
-  - No Redux — handled via Context API / local state
+  - Redux
 
 ---
 
