@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { FetchSellerOrders } from "@/redux/features/orderSlice";
+import { FetchSellerOrders } from "../../../redux/features/orderSlice";
 
 
 const SellerOrdersPage = () => {

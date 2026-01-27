@@ -10,7 +10,11 @@ export function middleware(req: NextRequest) {
     }
 
     if (pathname.startsWith("/Seller") && role !== "seller") {
-        return NextResponse.redirect(new URL("/unauthorized", req.url))
+        return NextResponse.redirect(new URL("/Unauthorized", req.url))
+    }
+
+    if (pathname.startsWith("/Buyer") && role !== "buyer") {
+        return NextResponse.redirect(new URL("/Unauthorized", req.url))
     }
 
     if (pathname.startsWith("/Buyer/Orders") && role !== "buyer") {
