@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
-  title: "Mern-Kart",
+  title: "Mern Kart App",
   description: "An Ecommerce Buying and Selling App",
 
-  manifest: "/manifest.json",
+  manifest: "/manifest.json?v=1",
 
   icons: {
     icon: "/logo.png",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Mern-Kart",
+    title: "Mern Kart App",
   },
   formatDetection: {
     telephone: false,
