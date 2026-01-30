@@ -1,6 +1,6 @@
 {
-    "name": "My Next App",
-    "short_name": "NextApp",
+    "name": "Mern Kart App",
+    "short_name": "Mern Kart",
     "description": "Next.js Progressive Web App",
     "start_url": "/",
     "scope": "/",
