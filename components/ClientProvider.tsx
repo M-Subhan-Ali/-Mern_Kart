@@ -21,6 +21,11 @@ export default function ClientProviders({
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {
+          // Check for updates every time the app is focused
+          window.addEventListener("focus", () => {
+            registration.update();
+          });
+
           registration.addEventListener("updatefound", () => {
             const newWorker = registration.installing;
             if (newWorker) {
