@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "Mern Kart App",
   description: "An Ecommerce Buying and Selling App",
 
-  manifest: "/manifest.json?v=1",
+  manifest: "/manifest.json?v=2",
 
   icons: {
     icon: "/logo.png",
