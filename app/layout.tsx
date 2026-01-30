@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "../components/ClientProvider"; // 👈 import this
@@ -13,13 +13,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
 export const metadata: Metadata = {
   title: "Mern-Kart",
   description: "An Ecommerce Buying and Selling App",
+
+  manifest: "/manifest.json",
+
   icons: {
     icon: "/logo.png",
+    apple: "/logo.png",
   },
 };
+
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
+
 
 export default function RootLayout({
   children,
