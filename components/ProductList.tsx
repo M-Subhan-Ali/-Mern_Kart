@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useTheme } from "../theme/ThemeProvider";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter,useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -55,7 +55,7 @@ const ProductList = () => {
 
   // Fetch products based on role
   useEffect(() => {
-    dispatch(fetchUserInfo()); 
+    dispatch(fetchUserInfo());
     if (role === "seller") {
       dispatch(fetchSellerProducts());
     } else {
@@ -135,11 +135,10 @@ const ProductList = () => {
       <button
         key={p}
         onClick={() => goToPage(p)}
-        className={`px-3 py-1 rounded-md text-sm border transition ${
-          p === currentPage
-            ? "bg-[#378C92] text-white border-transparent"
-            : "bg-transparent text-gray-300 border-gray-700 hover:bg-gray-800"
-        }`}
+        className={`px-3 py-1 rounded-md text-sm border transition ${p === currentPage
+          ? "bg-[#378C92] text-white border-transparent"
+          : "bg-transparent text-gray-300 border-gray-700 hover:bg-gray-800"
+          }`}
         aria-current={p === currentPage ? "page" : undefined}
         aria-label={`Go to page ${p}`}
       >
@@ -207,11 +206,11 @@ const ProductList = () => {
               </Link>
 
               {/* Details */}
-              <div className="p-4 flex flex-col gap-2 h-1/2 justify-around">
-                <h2 className="text-base sm:text-lg font-semibold text-white truncate">
+              <div className="p-4 flex flex-col gap-2 sm:h-1/2 sm:justify-around">
+                <h2 className="text-base sm:text-lg font-semibold text-white sm:truncate">
                   {product.title}
                 </h2>
-                <p className="text-sm text-gray-400 line-clamp-2">
+                <p className="text-sm text-gray-400 sm:line-clamp-2">
                   {product.description}
                 </p>
                 <p
