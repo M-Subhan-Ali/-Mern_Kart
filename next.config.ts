@@ -30,7 +30,34 @@ const nextConfig: NextConfig = {
 
 export default withPWA({
   dest: "public",
-  register: false,
+  register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+
+  runtimeCaching: [
+    //pages
+    {
+      urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "pages-cache",
+        expiration: { maxEntries: 50 }
+      }
+    },
+    {
+      urlPattern: /\.(?:js|css|png|jpg|jpeg|svg|webp|ico)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "static-assets",
+        expiration: { maxEntries: 50 }
+      }
+    },
+    {
+      urlPattern: /^https?.*/,
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "api-cache",
+      },
+    }
+  ]
 })(nextConfig);
