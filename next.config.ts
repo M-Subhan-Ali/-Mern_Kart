@@ -33,31 +33,33 @@ export default withPWA({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
-
+  fallbacks: {
+    document: "/Offline",
+  },
   runtimeCaching: [
-    //pages
     {
       urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
       handler: "NetworkFirst",
       options: {
         cacheName: "pages-cache",
-        expiration: { maxEntries: 50 }
-      }
+        expiration: { maxEntries: 50 },
+      },
     },
     {
       urlPattern: /\.(?:js|css|png|jpg|jpeg|svg|webp|ico)$/i,
-      handler: "CacheFirst",
+      handler: "StaleWhileRevalidate",
       options: {
         cacheName: "static-assets",
-        expiration: { maxEntries: 50 }
-      }
+        expiration: { maxEntries: 100 },
+      },
     },
     {
       urlPattern: /^https?.*/,
       handler: "NetworkFirst",
       options: {
         cacheName: "api-cache",
+        expiration: { maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 },
       },
-    }
-  ]
+    },
+  ],
 })(nextConfig);
