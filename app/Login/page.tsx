@@ -48,7 +48,13 @@ const LoginPage: React.FC = () => {
         router.push(user.role === "seller" ? "/Seller" : "/Buyer");
       }, 1500);
     } catch (err: any) {
-      toast.error(err || "Invalid email or password.", {
+
+      const errorMessage = err?.message ||
+        err?.error ||
+        err?.data?.message ||
+        "Invalid email or password.";
+
+      toast.error(errorMessage, {
         position: "top-center",
         autoClose: 3000,
       });
@@ -125,11 +131,10 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none ${
-              loading
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
-            }`}
+            className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none ${loading
+              ? "bg-gray-400 text-white cursor-not-allowed"
+              : "bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
+              }`}
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>

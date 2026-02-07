@@ -42,9 +42,11 @@ export const loginUser = createAsyncThunk(
 
       return res.data.user;
     } catch (error: any) {
-      return rejectWithValue(
-        error?.response?.data?.error || "Invalid credentials"
-      );
+      const backendMessage =
+        error.response?.data?.message ||  // common
+        error.response?.data?.error ||    // fallback
+        "Invalid credentials";            // default
+      return rejectWithValue(backendMessage);
     }
   }
 );
