@@ -42,11 +42,19 @@ export const loginUser = createAsyncThunk(
 
       return res.data.user;
     } catch (error: any) {
-      const backendMessage =
-        error.response?.data?.message ||  // common
-        error.response?.data?.error ||    // fallback
-        "Invalid credentials";            // default
-      return rejectWithValue(backendMessage);
+      if (error.response?.status === 429) {
+        return rejectWithValue(error.response.data.message);
+      }
+
+      // ❌ INVALID CREDENTIALS
+      if (error.response?.status === 401) {
+        return rejectWithValue("Invalid email or password");
+      }
+
+      // ❌ FALLBACK
+      return rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
     }
   }
 );

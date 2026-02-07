@@ -88,10 +88,18 @@ const SignUpPage: React.FC = () => {
         router.push(redirectPath);
       }, 1500);
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.error || "Something went wrong during signup.",
-        { position: "top-center" }
-      );
+      const errorMessage =
+        typeof error === "string"
+          ? error // ← from unwrap()
+          : error?.response?.data?.message || // ← from rate-limit / backend
+          error?.response?.data?.error ||
+          "Something went wrong during signup.";
+
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
     } finally {
       setLoading(false);
     }
@@ -282,8 +290,8 @@ const SignUpPage: React.FC = () => {
             type="submit"
             disabled={loading}
             className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none ${loading
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
+              ? "bg-gray-400 text-white cursor-not-allowed"
+              : "bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
               }`}
           >
             {loading ? "Creating Account..." : "Sign Up"}

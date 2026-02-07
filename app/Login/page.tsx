@@ -49,15 +49,13 @@ const LoginPage: React.FC = () => {
       }, 1500);
     } catch (err: any) {
 
-      const errorMessage = err?.message ||
-        err?.error ||
-        err?.data?.message ||
-        "Invalid email or password.";
-
-      toast.error(errorMessage, {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      toast.error(
+        typeof err === "string" ? err : "Something went wrong",
+        {
+          position: "top-center",
+          autoClose: 3000,
+        }
+      );
     } finally {
       setLoading(false);
     }
